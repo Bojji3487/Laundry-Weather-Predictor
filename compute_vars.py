@@ -2,6 +2,8 @@ import json
 from collections import defaultdict
 from datetime import datetime
 import csv
+import pandas as pd
+
 
 
 with open('datadump.json','r') as f:
@@ -99,3 +101,14 @@ with open("weather_training_data.csv", "w", newline="") as f:
             round(d["cloud_avg"], 2),
             round(d["morning_temp"], 2)
         ])
+
+df = pd.read_csv("weather_training_data.csv")
+
+df["comfort_score"] = (
+    0.35 * df["temp_max"]
+  + 0.30 * df["effective_sun"]
+  + 0.20 * df["temp_range"]
+  - 0.15 * df["cloud_avg"]
+)
+
+df.to_csv("weighted_dataset.csv", index=False)
